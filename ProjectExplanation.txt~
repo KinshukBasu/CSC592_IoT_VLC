@@ -1,0 +1,17 @@
+Packet Format:
+Each character is sent in the form of a packet. The packet consists of the following : header, payload and checksum. The header contains the character '1', so that the receiver understands that the subsequent bits are data bits. The payload stores the data which is of size 8 bits. The checksum is of 8 bits and is calculated using a key which is known to both the sender and the receiver.
+
+ACK/NAK format:
+When a bit is received from the Raspberry Pi to the host 2, an ACK is sent back to the pi. The ACK packet consists of the character '1'. When there is an error in the bit received, a NAK is sent to the Raspberry Pi. The NAK packet consists of the character '0'.
+
+LED on/off time:
+The LED is ON for 25ms when it receives a '1' and OFF for 25ms when it receives a '0'. The LED is set to +3.3V when ON and 0V otherwise.
+
+Synchronization Scheme:
+The packets sent to the Host 2 might not always be right. There is a chance of the packet getting corrupted. Sometimes, drift in data is observed in the packets received. This problem is overcome using the checksum and synchronization. If the checksum calculated is not the desired checksum, a NAK is sent back to the Raspberry Pi and retransmission is performed. If checksum does not checkout 3 times on the same packet, then synchronization has to be performed between the Host 2 and the Raspberry Pi. It sends a SYN – 2 status to the Raspberry Pi. The Raspberry Pi transmits the Synchronization stream (111111111111111100000000) to Arduino till a SYN-ACK (stat = 4) is received from Host 2. A SYN-ACK would be sent if the the Host 2 receives atleast 10(empirical threshold) consecutive 1's, otherwise a SYN-NAK is sent. After sending a SYN-ACK, the Host 2 waits till it reads a '0' and then starts listening for data. If a SYN-NAK (stat = 5) is received from Host2, the Synchronization stream is sent again. This helps to regain synchronization and prevents any drift in reading of bytes.
+
+Transmission time:
+The time taken to transmit each bit is ~25 ms.
+
+Reliability:
+We use ACKs and NAKs to ensure reliability. Whenever the Host 2 receives a packet, it checks for the checksum, if the checksum is as desired, an ACK is sent in response, else, a NAK is sent. Synchronization between the Raspberry pi and the Arduino is another way of ensuring reliability. The packets sent to the Host 2 might not always be right. There is a chance of the packet getting corrupted. Sometimes, drift in data is observed in the packets received. This problem is covered using the checksum and synchronization. If the checksum calculated is not the desired checksum, a NAK is sent back to the Raspberry Pi and retransmission is performed. If checksum does not check 3 times, then synchronisation has to be performed between the Host 2 and the Raspberry Pi. It sends a SYN – 2 status to the Raspberry Pi. The Raspberry Pi transmits the Synchronization stream (111111111111111100000000) to Arduino till a SYN-ACK (stat = 4) is received from Host 2. A SYN-ACK would be sent if the the Host 2 receives atleast 10 consecutive 1's, otherwise a SYN-NAK is sent. After sending a SYN-ACK, the Host 2 waits till it reads a '0' and then starts listening for data. If a SYN-NAK (stat = 5) is received from Host2, the Synchronization stream is sent again. This helps to regain synchronization and prevents any drift in reading of bytes.

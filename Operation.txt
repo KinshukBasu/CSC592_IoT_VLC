@@ -1,0 +1,22 @@
+Operation:
+ 
+A TCP Connection is established between Host1 and the RaspberryPi. The user input/data from file is transferred to the RaspberryPi, bytewise.
+
+The RaspberryPi converts each byte into its binary representation, computes and appends a checksum and transmits this stream of bits to the LED. 
+
+The LED is ON for 25msecs for bit 1 and OFF for 25msecs for bit 0.
+ 
+The photodiode reads the data from the LED and the analog signal from the photodiode is converted to digital and transmitted to the Host 2 through the Arduino's serial port over a USB cable.
+ 
+The Host2, checks the checksum for each packet received. 
+	Checksum checksout: Host2 transmits an ACK and writes the received data onto the console/file 
+	Checksum does not: Host2 sends a NAK to RaspberryPi and waits for retransmission.
+ 
+RaspberryPi receives an ACK: transmits next data along with its checksum. 
+RaspberryPi received a NAK: retransmits the unacknowledged data
+
+After detecting 3 consecutive NAKS on the same packet, it is deemed possible that Host 2 and the RaspberryPi have gone out of sync. Thus, Host2 sends a SYN signal requesting a synchronization stream. 
+
+Upon receipt of the SYN signal, the synchronization stream is sent from RaspberryPi to Host2, and RaspberryPi waits to receive SYN-ACK from Host2.
+
+In case an appropriate SYN stream is not received, Host2 sends a SYN-NAK to RaspberryPi and the latter continues to transmit the SYN stream till a SYN-ACK is received.  

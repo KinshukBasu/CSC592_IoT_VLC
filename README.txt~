@@ -1,0 +1,41 @@
+Data Transfer via Visible Light Communication
+
+This is our implementation of Data Transfer via Visible Light Communication (Python 2.7, C)
+
+Here are some of the salient features of the project:
+	Support for Real-time transfer of data from Host1 to Host2 using the RaspberryPi and the Arduino Uno. 
+	Support for generic file transfer from Host1 to Host2 using RaspberryPi and the Arduino. 
+	Provision of reliability using ACKs, NAKs and SYNC messages.  
+	In-order delivery of data
+	Guaranteed data delivery 
+
+Components:
+	Raspberry Pi
+	Arduino
+	LED, Photodiode, Resistors
+
+Compatibility:
+	Python 2.7, GCC
+	
+
+Operating Systems Tested on:
+	Linux
+	Raspbian 
+
+Instructions to Run:
+	Run all code as root. 
+	Change ServerName in Pi.py to current IP address of RaspberryPi.
+	In case of file transfer, make sure the file to be transferred is present in the same directory as the code on Host 1. 	
+	Make sure the server process(Pi.py) is running on the Raspbian. 
+	Execute the Host 1 process(Reader.py) and enter the port number for Host 1
+	Execute the Host 2 process(SerialRead.py) for data/file transfer, enter the port number. 
+	Host 1 will select file transfer/console input mode.
+	Host 2 will select file write/console output mode.
+	In case of file transfer, Host 2 enters file name(with extension), followed by Host 1 entering file name. In case of console input, 		the Host 1 starts typing.
+	Order of execution is important.
+
+References:
+	https://www.raspberrypi.org/forums/viewtopic.php?t=69046
+	https://docs.python.org/2/howto/sockets.html
+	Stack Overflow
+
